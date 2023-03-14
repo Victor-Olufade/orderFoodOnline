@@ -1,5 +1,5 @@
 import express,{Request, Response, NextFunction} from 'express';
-import { vendorLogin, getVendorProfile, editVendorProfile, updateVendorService, addFood, getFoods } from '../controllers';
+import { vendorLogin, getVendorProfile, editVendorProfile, updateVendorService, addFood, getFoods, updateVendorCoverImage } from '../controllers';
 import { authUser } from '../middlewares/authMiddleware';
 import { upload } from '../config';
 
@@ -18,6 +18,8 @@ router.patch('/service', authUser, updateVendorService)
 router.post('/food', authUser, upload.array('image'), addFood)
 
 router.get('/food', authUser, getFoods)
+
+router.patch('/updateCoverImage', authUser, upload.array('image'), updateVendorCoverImage)
 
 router.get('/', (req: Request, res: Response)=>{
     res.json("Hello from vendor")

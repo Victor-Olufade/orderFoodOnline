@@ -90,6 +90,26 @@ export const updateVendorService = async (
   })
 }
 
+export const updateVendorCoverImage = async (req: Request, res: Response) => {
+  const user = req.user
+
+  const vendor = await findVendor(user?.id)
+
+  const files = req.files as Express.Multer.File[];
+  const images = files.map((file: Express.Multer.File)=> file.path) as [string]
+
+  if (vendor !== null) {
+    vendor.coverImages = images;
+
+    const updatedVendor = await vendor.save()
+    return res.status(201).json(updatedVendor)
+  }
+
+  return res.status(404).json({
+    Error: "Vendor not found"
+  })
+}
+
 export const addFood = async (req: Request, res: Response) => {
   const user = req.user
 
@@ -138,6 +158,4 @@ export const getFoods = async (req: Request, res: Response) => {
       Error: 'There was an error fetching foods',
     })
   }
-
-  // const foods
 }
