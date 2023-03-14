@@ -1,6 +1,7 @@
 import express from 'express';
 import {adminRouter} from './routes';
 import {vendorRouter} from './routes';
+import logger from 'morgan';
 import mongoose from 'mongoose';
 import { mongoConnectString } from './config';
 import dotenv from 'dotenv';
@@ -11,6 +12,8 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
+app.use(logger('dev'))
 
 const dataBaseConnect = async() => {
     try {

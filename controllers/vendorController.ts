@@ -1,3 +1,4 @@
+import { VendorPayload } from './../dto/vendor.dto'
 import { Request, Response, NextFunction } from 'express'
 import { findVendor } from './adminController'
 import { VendorLoginInputs, CreateFoodInputs } from '../dto'
@@ -35,8 +36,6 @@ export const vendorLogin = async (
   })
 }
 
-
-
 export const getVendorProfile = async (
   req: Request,
   res: Response,
@@ -46,8 +45,6 @@ export const getVendorProfile = async (
 
   return res.status(200).json(vendor)
 }
-
-
 
 export const editVendorProfile = async (
   req: Request,
@@ -73,8 +70,6 @@ export const editVendorProfile = async (
   return res.status(200).json(existingVendor)
 }
 
-
-
 export const updateVendorService = async (
   req: Request,
   res: Response,
@@ -95,30 +90,54 @@ export const updateVendorService = async (
   })
 }
 
-
-
 export const addFood = async (req: Request, res: Response) => {
+  const user = req.user
 
-    const user = req.user;
-    
-    const {name, description, category, foodType, readyTime, price} = <CreateFoodInputs>req.body;
-    const vendor = await findVendor(user?.id)
+  const { name, description, category, foodType, readyTime, price } = <
+    CreateFoodInputs
+  >req.body;
+  const vendor = await findVendor(user?.id)
 
-    if(vendor !== null){
-        const food = await Food.create({
-            vendorId: vendor.id,
-            name,
-            description,
-            category,
-            foodType,
-            readyTime,
-            rating: 0,
-            price,
-            imagesArr: [""]
-        })
+  const files = req.files as Express.Multer.File[];
+  const images = files.map((file: Express.Multer.File)=> file.path)
 
-        vendor.foods.push(food);
-        const vendorWithFood = await vendor.save()
-        return res.status(201).json(vendorWithFood);
+  if (vendor !== null) {
+    const food = await Food.create({
+      vendorId: vendor.id,
+      name,
+      description,
+      category,
+      foodType,
+      readyTime,
+      rating: 0,
+      price,
+      imagesArr: images
+    })
+
+    vendor.foods.push(food)
+    const vendorWithFood = await vendor.save()
+    return res.status(201).json(vendorWithFood)
+  }
+}
+
+export const getFoods = async (req: Request, res: Response) => {
+  const { id } = req.user as VendorPayload
+
+  try {
+    const foods = await Food.find({ vendorId: id })
+    if (foods.length === 0) {
+      return res.status(200).json({
+        Message: 'You have added no foods',
+      })
     }
+    return res.status(200).json(foods)
+  } catch (error) {
+    console.log(error)
+
+    return res.status(400).json({
+      Error: 'There was an error fetching foods',
+    })
+  }
+
+  // const foods
 }

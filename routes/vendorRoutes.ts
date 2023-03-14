@@ -1,6 +1,7 @@
 import express,{Request, Response, NextFunction} from 'express';
-import { vendorLogin, getVendorProfile, editVendorProfile, updateVendorService, addFood } from '../controllers';
+import { vendorLogin, getVendorProfile, editVendorProfile, updateVendorService, addFood, getFoods } from '../controllers';
 import { authUser } from '../middlewares/authMiddleware';
+import { upload } from '../config';
 
 
 
@@ -14,9 +15,9 @@ router.patch('/profile', authUser, editVendorProfile)
 
 router.patch('/service', authUser, updateVendorService)
 
-router.post('/food', authUser, addFood)
+router.post('/food', authUser, upload.array('image'), addFood)
 
-router.get('/food')
+router.get('/food', authUser, getFoods)
 
 router.get('/', (req: Request, res: Response)=>{
     res.json("Hello from vendor")
