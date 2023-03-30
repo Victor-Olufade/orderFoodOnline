@@ -1,5 +1,5 @@
+import { AuthPayLoad } from './../dto/auth.dto';
 import bcrypt from 'bcrypt';
-import { VendorPayload } from '../dto';
 import { appSecret } from '../config';
 import jwt from 'jsonwebtoken';
 
@@ -17,6 +17,6 @@ export const validatePassword = async (password: string, incomingPassword: strin
     return await bcrypt.compare(incomingPassword, password)
 }
 
-export const generateSignature = async (payload: VendorPayload) => {
+export const generateSignature = async (payload: AuthPayLoad) => {
     return await jwt.sign(payload, appSecret, {expiresIn: '1d'})
 }
