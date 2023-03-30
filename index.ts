@@ -1,41 +1,11 @@
 import express from 'express';
-import {adminRouter} from './routes';
-import {vendorRouter} from './routes';
-import logger from 'morgan';
-import mongoose from 'mongoose';
-import { mongoConnectString } from './config';
-import dotenv from 'dotenv';
+import App from './services/ExpressApp';
+import { dataBaseConnect } from './services/Database';
 
-dotenv.config()
-
-const app = express()
-
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-
-app.use(logger('dev'))
-
-const dataBaseConnect = async() => {
-    try {
-        const connect = mongoose.connect(mongoConnectString, ()=>{
-            console.log('Database connected successfully');
-        })
-    } catch (error) {
-        console.log(error);
-        
-    }
-   
+const startServer = async () => {
+    const app = express();
+    dataBaseConnect();
+    await App(app);
 }
 
-mongoose.set('strictQuery', false);
-
-dataBaseConnect();
-
-
-app.listen(8000, ()=>{
-    console.log(`server listening on port 8000`);
-    
-})
-
-app.use('/admin', adminRouter)
-app.use('/vendor', vendorRouter)
+startServer();
