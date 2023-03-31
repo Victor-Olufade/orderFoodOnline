@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 
 export interface CustomerDoc extends Document{
+    id: string;
     email: string;
     password: string;
     salt: string;

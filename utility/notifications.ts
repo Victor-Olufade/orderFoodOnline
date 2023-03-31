@@ -40,7 +40,7 @@ const transport = nodemailer.createTransport({
    let result = `
     <div style = "max-width:700px; margin: auto; border: 10px solid #ddd; padding: 50px, 20px; font-size: 110%;">
     <h2 style = "text-align: center; text-transform: uppercase; color: teal;">
-    Welcome to Support Desk
+    Welcome to EatNow
     </h2>
     <p>
     Hi ${name}, your OTP is ${otp}. It expires in 30 minutes.
