@@ -1,4 +1,4 @@
-import { VendorPayload } from './../dto/vendor.dto'
+import { VendorPayload } from '../dto/vendor.dto'
 import { Request, Response, NextFunction } from 'express'
 import { findVendor } from './adminController'
 import { VendorLoginInputs, CreateFoodInputs } from '../dto'

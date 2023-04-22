@@ -1,7 +1,13 @@
-import { getFoodAvailability, getFoodsIn30Minutes, getRestaurantById, getTopRestaurants, searchFoods } from './../controllers/shoppingController';
-import express from 'express';
+import {
+  getFoodAvailability,
+  getFoodsIn30Minutes,
+  getRestaurantById,
+  getTopRestaurants,
+  searchFoods,
+} from '../controllers/shoppingController'
+import express from 'express'
 
-const router = express.Router();
+const router = express.Router()
 
 router.get('/:pincode', getFoodAvailability)
 
@@ -13,4 +19,4 @@ router.get('/search/:pincode', searchFoods)
 
 router.get('/restaurant/:id', getRestaurantById)
 
-export {router as shooppingRouter}
+export { router as shooppingRouter }
