@@ -384,3 +384,102 @@ export const getOrderById = async (req: Request, res: Response) => {
     })
   }
 }
+
+
+export const addToCart = async (req: Request, res: Response) => {
+  const customer = req.user;
+  if(!customer){
+    return res.status(400).json({
+      Error: "You cannot add to cart"
+    })
+  }
+
+  const profile = await Customer.findById(customer.id).populate('cart.food')
+
+  let cartItems = Array()
+  const {id, unit} = <OrderInputs>req.body
+
+  if(id == null || unit == null){
+    return res.status(400).json({
+      Error: "null fields disallowed"
+    })
+  }
+
+  let food;
+  try {
+     food = await Food.findById(id)
+  } catch (error) {
+    return res.status(500).json({
+      Error: "food not found",
+    })
+  }
+  
+  cartItems = profile!.cart;
+
+  if(cartItems.length > 0){
+    const existingItem = cartItems.find((item) => item.food.id === id )
+    if(!existingItem){
+      cartItems.push({food, unit})
+    }
+    
+    if(existingItem && unit > 0){
+      existingItem.unit = unit
+    }
+    
+    if(existingItem && unit == 0){
+      let indexOfItem = cartItems.indexOf(existingItem);
+      cartItems.splice(indexOfItem, 1)
+    }
+
+  }else{
+    cartItems.push({food, unit})
+  }
+
+  
+  profile!.cart = cartItems as any
+  const saved = await profile!.save()
+  if(saved){
+    return res.status(201).json({
+      message: "Added to cart",
+      cart: saved.cart
+    })
+  }
+  
+
+}
+
+
+export const getCart = async (req: Request, res: Response) => {
+  const customer = req.user;
+  if(!customer){
+    return res.status(400).json({
+      Error: "You cannot get cart"
+    })
+  }
+
+  const profile = await Customer.findById(customer.id).populate('cart.food')!
+
+  return res.status(200).json({
+    cart: profile!.cart
+  })
+
+}
+
+
+export const deleteCart = async (req: Request, res: Response) => {
+  const customer = req.user;
+  if(!customer){
+    return res.status(400).json({
+      Error: "You cannot delete cart"
+    })
+  }
+
+  const profile = await Customer.findById(customer.id).populate('cart.food')
+
+  profile!.cart = [] as any
+  const deletedCart = await profile!.save()
+
+  return res.status(200).json({
+    cart: profile!.cart
+  })
+}

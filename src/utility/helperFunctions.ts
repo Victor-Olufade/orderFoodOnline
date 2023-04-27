@@ -1,6 +1,6 @@
 import { AuthPayLoad } from '../dto/auth.dto'
 import bcrypt from 'bcrypt'
-import { appSecret } from '../../config'
+import { appSecret } from '../config'
 import jwt from 'jsonwebtoken'
 
 export const generateSalt = async () => {
